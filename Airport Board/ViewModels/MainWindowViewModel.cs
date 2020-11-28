@@ -1,7 +1,9 @@
-﻿using Airport_Board.ViewModels.Base;
+﻿using Airport_Board.Infrastructure.Commands;
+using Airport_Board.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Input;
 
 namespace Airport_Board.ViewModels
 {
@@ -34,6 +36,27 @@ namespace Airport_Board.ViewModels
         {
             get => _timeNow;
             set => Set(ref _timeNow, value);
+        }
+
+        #region Команды
+
+        #region Команда запуска аэропорта
+        public ICommand StartWorkCommand { get; }
+
+        private void OnStartWorkCommandExecuted(object p)
+        {
+            System.Diagnostics.Debug.WriteLine("Работа аэропорта запущена");
+        }
+
+        private bool CanStartWorkCommandExecute(object p) => true;
+
+        #endregion
+
+        #endregion
+
+        public MainWindowViewModel()
+        {
+            StartWorkCommand = new RelayCommand(OnStartWorkCommandExecuted, CanStartWorkCommandExecute);
         }
     }
 }
