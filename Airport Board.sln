@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airport Board", "Airport Board\Airport Board.csproj", "{4A7D9C66-BC26-4249-A172-BC4BA8F75C71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Airport Board", "Airport Board\Airport Board.csproj", "{4A7D9C66-BC26-4249-A172-BC4BA8F75C71}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A363FB5F-3BED-4BEA-996B-8062EBDDDF1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABConsole", "Tests\ABConsole\ABConsole.csproj", "{8E0A9F93-5EB1-4B5D-A00C-E99A6150C0DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +19,16 @@ Global
 		{4A7D9C66-BC26-4249-A172-BC4BA8F75C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A7D9C66-BC26-4249-A172-BC4BA8F75C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A7D9C66-BC26-4249-A172-BC4BA8F75C71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E0A9F93-5EB1-4B5D-A00C-E99A6150C0DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E0A9F93-5EB1-4B5D-A00C-E99A6150C0DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E0A9F93-5EB1-4B5D-A00C-E99A6150C0DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E0A9F93-5EB1-4B5D-A00C-E99A6150C0DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8E0A9F93-5EB1-4B5D-A00C-E99A6150C0DA} = {A363FB5F-3BED-4BEA-996B-8062EBDDDF1C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B399E417-9802-4347-8732-2F7726DAA1FC}
