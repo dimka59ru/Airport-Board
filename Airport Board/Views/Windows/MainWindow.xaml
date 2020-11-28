@@ -3,10 +3,95 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Airport_Board.ViewModels"
         xmlns:local="clr-namespace:Airport_Board"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Airport Board" 
+        Height="450" Width="800">
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    Content="{Binding ButtonStartContent}"/>
 
+            <Border Grid.Column="1" 
+                    Margin="5 0"
+                    Background="LightBlue"
+                    VerticalAlignment="Stretch" 
+                    HorizontalAlignment="Stretch">
+                <TextBlock Text="{Binding TimeNow}"
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Stretch"
+                           TextAlignment="Center"
+                           FontSize="28"/>
+            </Border>
+
+            <Grid Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="50" />
+                </Grid.ColumnDefinitions>
+                <Slider x:Name="FactorSlider"
+                        Value="0" 
+                        Minimum="{Binding MinFactor}" 
+                        Maximum="{Binding MaxFactor}"
+                        Grid.Column="0" 
+                        VerticalAlignment="Center" 
+                        HorizontalAlignment="Stretch" />
+
+                <Border  Grid.Column="1" 
+                         Margin="5 0 0 0"
+                         BorderThickness="1" 
+                         BorderBrush="LightGray"
+                         VerticalAlignment="Center" 
+                         HorizontalAlignment="Stretch">
+
+                    <TextBlock                         
+                        TextAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="{Binding Path=Value, ElementName=FactorSlider, StringFormat=F0}"/>
+                </Border>
+            </Grid>
+
+            
+
+
+
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border  Grid.Column="0"                         
+                    BorderThickness="1" 
+                    BorderBrush="LightGray"
+                    VerticalAlignment="Stretch" 
+                    HorizontalAlignment="Stretch">
+
+            </Border>
+            <Border  Grid.Column="1"                         
+                    BorderThickness="1" 
+                    BorderBrush="LightGray"
+                    VerticalAlignment="Stretch" 
+                    HorizontalAlignment="Stretch">
+
+            </Border>
+        </Grid>
     </Grid>
 </Window>
