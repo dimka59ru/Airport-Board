@@ -100,7 +100,12 @@ namespace Airport_Board.ViewModels
 
             // Читаем
             var jsonString = File.ReadAllText(@"C:\Users\Дмитрий\OneDrive\Рабочий стол\1.json");
-            var x = JsonSerializer.Deserialize<List<ScheduleRow>>(jsonString);
+            var schedule = JsonSerializer.Deserialize<List<ScheduleRow>>(jsonString);
+
+            var airport = new Airport
+            {
+                Schedule = schedule
+            };
         }
 
 
