@@ -13,13 +13,23 @@ namespace Airport_Board.ViewModels
         private int _minFactor = 1;
         private int _maxFactor = 10000;        
         private double _factor = 1.0;
-
-        private string _buttonStartContent = "Старт";        
+        
         private string _timeNow = "0d:00h:00m:00s";
 
         private TimeSpan _timeSpan = TimeSpan.Zero;
         private readonly DispatcherTimer _timer = new DispatcherTimer();
         private double _defaultTimerInterval = 1000;
+
+        private bool _airportStarted;
+        public bool AirportStarted
+        {
+            get => _airportStarted;
+            set
+            {
+                Set(ref _airportStarted, value);
+                OnPropertyChanged(nameof(ButtonStartStopContent));
+            }
+        }
 
         public int MinFactor
         {
@@ -41,13 +51,9 @@ namespace Airport_Board.ViewModels
                 Set(ref _factor, value);
                 ChangeTimerInterval();
             }
-        }        
-
-        public string ButtonStartContent
-        {
-            get => _buttonStartContent;
-            set => Set(ref _buttonStartContent, value);
         }
+
+        public string ButtonStartStopContent => AirportStarted ? "Стоп" : "Старт";        
 
         public string TimeNow
         {
@@ -58,16 +64,21 @@ namespace Airport_Board.ViewModels
         #region Команды
 
         #region Команда запуска аэропорта
-        public ICommand StartWorkCommand { get; }
+        public ICommand StartStopWorkCommand { get; }
 
-        private void OnStartWorkCommandExecuted(object p)
+        private void OnStartStopWorkCommandExecuted(object p)
         {
-            _timer.Interval = TimeSpan.FromMilliseconds(_defaultTimerInterval);
-            _timer.Tick += Timer_Tick;
-            _timer.Start();
+            if (AirportStarted)
+            {
+                StopWorkAirport();
+            }
+            else
+            {
+                StartWorkAirport();
+            }
         }
 
-        private bool CanStartWorkCommandExecute(object p) => true;
+        private bool CanStartStopWorkCommandExecute(object p) => true;
 
         #endregion
 
@@ -75,10 +86,24 @@ namespace Airport_Board.ViewModels
 
         public MainWindowViewModel()
         {
-            StartWorkCommand = new RelayCommand(OnStartWorkCommandExecuted, CanStartWorkCommandExecute);   
+            StartStopWorkCommand = new RelayCommand(OnStartStopWorkCommandExecuted, CanStartStopWorkCommandExecute);   
         }
 
 
+        private void StartWorkAirport()
+        {
+            _timer.Interval = TimeSpan.FromMilliseconds(_defaultTimerInterval/Factor);
+            _timer.Tick += Timer_Tick;
+            _timer.Start();
+
+            AirportStarted = true;
+        }
+
+        private void StopWorkAirport()
+        {
+            _timer.Stop();
+            AirportStarted = false;
+        }
 
         private void Timer_Tick(object sender, EventArgs e)
         {

@@ -26,8 +26,8 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0"
                     Margin="0 0 5 0"
-                    Content="{Binding ButtonStartContent}"
-                    Command="{Binding StartWorkCommand}"/>
+                    Content="{Binding ButtonStartStopContent}"
+                    Command="{Binding StartStopWorkCommand}"/>
 
             <Border Grid.Column="1" 
                     Margin="0 0 5 0"
