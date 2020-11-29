@@ -6,7 +6,7 @@ namespace Airport_Board.Models
 {
     internal class ScheduleRow
     {
-        public Aircrafts Aircraft { get; set; }
+        public AircraftSizes AircraftSize { get; set; }
 
         public Actions @Action { get; set; }
 

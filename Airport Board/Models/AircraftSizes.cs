@@ -3,7 +3,7 @@
 namespace Airport_Board.Models
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    internal enum Aircrafts
+    internal enum AircraftSizes
     {        
         Small,
         Middle,

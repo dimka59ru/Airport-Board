@@ -34,7 +34,7 @@
                     Background="LightBlue"
                     VerticalAlignment="Stretch" 
                     HorizontalAlignment="Stretch">
-                <TextBlock Text="{Binding TimeNow}"
+                <TextBlock Text="{Binding TimePassed}"
                            VerticalAlignment="Center" 
                            HorizontalAlignment="Stretch"
                            TextAlignment="Center"
@@ -56,6 +56,10 @@
                         TickFrequency="100"
                         Value="{Binding Factor}"/>
             </DockPanel>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            
         </Grid>
 
         <Grid Grid.Row="2">
