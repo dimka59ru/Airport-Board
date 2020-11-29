@@ -122,7 +122,7 @@
                 <TextBlock Text="{Binding AircraftSize}" Style="{StaticResource TextStyle}"/>
             </Border>
             <Border Grid.Row="1" Grid.Column="3" Style="{StaticResource FlightInfoStyle}">
-                <TextBlock Text="{Binding City, NotifyOnTargetUpdated=True}" Style="{StaticResource TextStyle}">
+                <TextBlock Text="{Binding CountPassengers, NotifyOnTargetUpdated=True}" Style="{StaticResource TextStyle}">
                     <TextBlock.Triggers>
                         <EventTrigger RoutedEvent="Binding.TargetUpdated">
                             <BeginStoryboard>

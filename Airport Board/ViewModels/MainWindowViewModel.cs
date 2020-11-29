@@ -154,9 +154,6 @@ namespace Airport_Board.ViewModels
                 return aircraftTime == nowTime;
             });
 
-
-
-
             if (fligthInfo != null)
             {
                 FlightInfo = new FlightInfoViewModel(fligthInfo);
