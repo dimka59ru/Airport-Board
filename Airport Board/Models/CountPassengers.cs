@@ -6,8 +6,20 @@ namespace Airport_Board.Models
 {
     internal class CountPassengers
     {
-        public int LastFlight { get; set; }
+        private int lastFlight;
+
+        public int LastFlight
+        {
+            get => lastFlight;
+            set
+            {
+                lastFlight = value;
+                All += lastFlight;
+            }
+        }
+
         public int LastDay { get; set; }
-        public int All { get; set; }
+
+        public int All { get; private set; }
     }
 }
