@@ -1,8 +1,11 @@
 ﻿using Airport_Board.Infrastructure.Commands;
+using Airport_Board.Models;
 using Airport_Board.ViewModels.Base;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -86,7 +89,18 @@ namespace Airport_Board.ViewModels
 
         public MainWindowViewModel()
         {
-            StartStopWorkCommand = new RelayCommand(OnStartStopWorkCommandExecuted, CanStartStopWorkCommandExecute);   
+            StartStopWorkCommand = new RelayCommand(OnStartStopWorkCommandExecuted, CanStartStopWorkCommandExecute);
+
+
+            //var options = new JsonSerializerOptions
+            //{
+            //    WriteIndented = true,
+            //    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            //};
+
+            // Читаем
+            var jsonString = File.ReadAllText(@"C:\Users\Дмитрий\OneDrive\Рабочий стол\1.json");
+            var x = JsonSerializer.Deserialize<List<ScheduleRow>>(jsonString);
         }
 
 

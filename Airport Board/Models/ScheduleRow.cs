@@ -8,9 +8,9 @@ namespace Airport_Board.Models
     {
         public Aircrafts Aircraft { get; set; }
 
-        public Actions Action { get; set; }
+        public Actions @Action { get; set; }
 
-        public TimeSpan Time { get; set; }
+        public DateTime Time { get; set; }
 
         public string City { get; set; }
     }
