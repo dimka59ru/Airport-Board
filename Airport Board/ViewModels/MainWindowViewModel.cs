@@ -16,9 +16,9 @@ namespace Airport_Board.ViewModels
     internal class MainWindowViewModel : ViewModelBase
     {
         private int _minFactor = 1;
-        private int _maxFactor = 10000;        
+        private int _maxFactor = 10000;
         private double _factor = 1.0;
-        
+
         private string _timePassed = "0d:00h:00m:00s";
 
         private TimeSpan _timeSpan = TimeSpan.Zero;
@@ -28,6 +28,7 @@ namespace Airport_Board.ViewModels
         private bool _airportStarted;
 
         private Airport _airport;
+        private FlightInfoViewModel _flightInfo;
 
         public bool AirportStarted
         {
@@ -61,12 +62,18 @@ namespace Airport_Board.ViewModels
             }
         }
 
-        public string ButtonStartStopContent => AirportStarted ? "Стоп" : "Старт";        
+        public string ButtonStartStopContent => AirportStarted ? "Стоп" : "Старт";
 
         public string TimePassed
         {
             get => _timePassed;
             set => Set(ref _timePassed, value);
+        }
+
+        public FlightInfoViewModel FlightInfo 
+        { 
+            get => _flightInfo; 
+            set => Set(ref _flightInfo, value);
         }
 
         #region Команды
@@ -116,7 +123,7 @@ namespace Airport_Board.ViewModels
 
         private void StartWorkAirport()
         {
-            _timer.Interval = TimeSpan.FromMilliseconds(_defaultTimerInterval/Factor);
+            _timer.Interval = TimeSpan.FromMilliseconds(_defaultTimerInterval / Factor);
             _timer.Tick += Timer_Tick;
             _timer.Start();
 
@@ -132,7 +139,7 @@ namespace Airport_Board.ViewModels
         private void Timer_Tick(object sender, EventArgs e)
         {
             // Прибавляем время
-            _timeSpan = _timeSpan.Add(TimeSpan.FromSeconds(1)); 
+            _timeSpan = _timeSpan.Add(TimeSpan.FromSeconds(1));
             TimePassed = string.Format("{0:D1}d:{1:D2}h:{2:D2}m:{3:D2}s",
                                             _timeSpan.Days,
                                             _timeSpan.Hours,
@@ -140,23 +147,28 @@ namespace Airport_Board.ViewModels
                                             _timeSpan.Seconds);
 
             // Сравнивая время, находим самолет
-            var aircraft = _airport.Schedule.FirstOrDefault(x =>
+            var fligthInfo = _airport.Schedule.FirstOrDefault(x =>
             {
                 var aircraftTime = x.Time.TimeOfDay;
                 var nowTime = _timeSpan.Subtract(TimeSpan.FromDays(_timeSpan.Days)); // Уберем дни из прошедшего времени
                 return aircraftTime == nowTime;
             });
 
-            if (aircraft != null)
+
+
+
+            if (fligthInfo != null)
             {
-                Debug.WriteLine($"{aircraft.Action} - {aircraft.AircraftSize} - {aircraft.City} - {aircraft.Time}");
+                FlightInfo = new FlightInfoViewModel(fligthInfo);
+
+                Debug.WriteLine($"{fligthInfo.Action} - {fligthInfo.AircraftSize} - {fligthInfo.City} - {fligthInfo.Time}");
             }
         }
 
         private void ChangeTimerInterval()
         {
             _timer.Stop();
-            _timer.Interval = TimeSpan.FromMilliseconds(_defaultTimerInterval/Factor);
+            _timer.Interval = TimeSpan.FromMilliseconds(_defaultTimerInterval / Factor);
             _timer.Start();
         }
     }
