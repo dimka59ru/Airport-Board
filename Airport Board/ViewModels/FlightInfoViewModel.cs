@@ -54,7 +54,11 @@ namespace Airport_Board.ViewModels
             set => Set(ref _countPassengers, value);
         }
 
-        public FlightInfoViewModel(ScheduleRow scheduleRow)
+        public FlightInfoViewModel()
+        {
+        }
+
+        public void UpdateInfo(ScheduleRow scheduleRow)
         {
             _fligthInfo = scheduleRow;
 

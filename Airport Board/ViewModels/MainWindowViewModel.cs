@@ -28,7 +28,7 @@ namespace Airport_Board.ViewModels
         private bool _airportStarted;
 
         private Airport _airport;
-        private FlightInfoViewModel _flightInfo;
+        private FlightInfoViewModel _flightInfo = new FlightInfoViewModel();
 
         public bool AirportStarted
         {
@@ -117,7 +117,7 @@ namespace Airport_Board.ViewModels
             _airport = new Airport
             {
                 Schedule = schedule
-            };
+            };            
         }
 
 
@@ -156,7 +156,17 @@ namespace Airport_Board.ViewModels
 
             if (fligthInfo != null)
             {
-                FlightInfo = new FlightInfoViewModel(fligthInfo);
+                FlightInfo.UpdateInfo(fligthInfo); // Обновляем инфо о рейсе
+
+                if (fligthInfo.Action == Actions.Arrival)
+                {
+                    _airport.CountPassengersArrival.LastFlight = FlightInfo.CountPassengers;
+                }
+                else
+                {
+                    _airport.CountPassengersDeparture.LastFlight = FlightInfo.CountPassengers;
+                }
+                
 
                 Debug.WriteLine($"{fligthInfo.Action} - {fligthInfo.AircraftSize} - {fligthInfo.City} - {fligthInfo.Time}");
             }
