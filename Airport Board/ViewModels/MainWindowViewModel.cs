@@ -1,14 +1,11 @@
 ﻿using Airport_Board.Infrastructure.Commands;
 using Airport_Board.Models;
+using Airport_Board.Services;
 using Airport_Board.ViewModels.Base;
 using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -28,8 +25,12 @@ namespace Airport_Board.ViewModels
 
         private bool _airportStarted;
 
-        private Airport _airport;       
+        private Airport _airport;
 
+        private readonly IGetScheduleFromFileService _getScheduleFromFileService;
+
+
+        #region Properties
         public bool AirportStarted
         {
             get => _airportStarted;
@@ -70,11 +71,11 @@ namespace Airport_Board.ViewModels
             set => Set(ref _timePassed, value);
         }
 
-        public FlightInfoViewModel FlightInfo { get; } = new FlightInfoViewModel();
+        #endregion
 
+        public FlightInfoViewModel FlightInfo { get; } = new FlightInfoViewModel();
         public CountPassengersInfoViewModel PassengersInfoArrival { get; } = new CountPassengersInfoViewModel();
         public CountPassengersInfoViewModel PassengersInfoDeparture { get; } = new CountPassengersInfoViewModel();
-
 
         #region Команды
 
@@ -114,9 +115,10 @@ namespace Airport_Board.ViewModels
                 filePath = openFileDialog.FileName;
                 if (filePath.Length != 0)
                 {
-                    // todo: try catch
-                    var jsonString = File.ReadAllText(filePath);
-                    var schedule = JsonSerializer.Deserialize<List<ScheduleRow>>(jsonString);
+                    // todo: try catch                    
+
+                    var _getScheduleFromFileService = new GetScheduleFromJsonFileService();
+                    var schedule = _getScheduleFromFileService.GetScheduleFromFile(filePath).ToList();
 
                     _airport = new Airport
                     {
@@ -129,8 +131,10 @@ namespace Airport_Board.ViewModels
 
         #endregion
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(IGetScheduleFromFileService getScheduleFromFileService)
         {
+            _getScheduleFromFileService = getScheduleFromFileService;
+            
             StartStopWorkCommand = new RelayCommand(OnStartStopWorkCommandExecuted, CanStartStopWorkCommandExecute);
             GetFileScheduleCommand = new RelayCommand(OnGetFileScheduleCommandExecuted, CanGetFileScheduleCommandExecute);                  
         }
@@ -168,7 +172,6 @@ namespace Airport_Board.ViewModels
                                             _timeSpan.Hours,
                                             _timeSpan.Minutes,
                                             _timeSpan.Seconds);
-
             
 
             // Сравнивая время, находим самолет

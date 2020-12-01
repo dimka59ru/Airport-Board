@@ -2,8 +2,11 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Airport_Board"
+             xmlns:vm ="clr-namespace:Airport_Board.ViewModels"
              StartupUri="Views/Windows/MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <vm:ViewModelLocator x:Key="Locator" />
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

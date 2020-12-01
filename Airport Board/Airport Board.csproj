@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Airport_Board</RootNamespace>
     <UseWPF>true</UseWPF>
+    <StartupObject>Airport_Board.Programm</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.0.0" />
     <PackageReference Include="FontAwesome5" Version="2.0.8" />
   </ItemGroup>
 
