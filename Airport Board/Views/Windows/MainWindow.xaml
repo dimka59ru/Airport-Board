@@ -31,15 +31,33 @@
         <Style x:Key="TextStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="FontSize" Value="18"/>            
         </Style>
+        
+        <Style x:Key="CountPassengersHeaderStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="Background" Value="DodgerBlue"/>
+        </Style>
     </Window.Resources>    
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="50"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="5">
+
+        <Menu>
+            <MenuItem Header="Файл">
+                <MenuItem Header="Загрузить расписание" Command="{Binding GetFileScheduleCommand}">
+                    <MenuItem.Icon>
+                        <fa5:FontAwesome Icon="Solid_FileUpload" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        <Grid Grid.Row="1" Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -79,7 +97,7 @@
             </DockPanel>
         </Grid>
         
-        <Grid Grid.Row="1" DataContext="{Binding FlightInfo}" Margin="5 5 6 5"
+        <Grid Grid.Row="2" DataContext="{Binding FlightInfo}" Margin="5 5 6 5"
               Background="BurlyWood"
               x:Name="FlightInfoRow">
             <Grid.RowDefinitions>
@@ -146,25 +164,32 @@
             
         </Grid>
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Border  Grid.Column="0"                         
+            <Border Grid.Column="0"                         
                     BorderThickness="1" 
                     BorderBrush="LightGray"
                     VerticalAlignment="Stretch" 
-                    HorizontalAlignment="Stretch">
-
+                    HorizontalAlignment="Stretch"
+                    Margin="5" DataContext="{Binding PassengersInfoArrival}">
+                <StackPanel>
+                    <TextBlock Text="Прилёт" Style="{StaticResource CountPassengersHeaderStyle}"/>
+                    <TextBlock Text="{Binding LastDay}" Style="{StaticResource CountPassengersHeaderStyle}"/>
+                </StackPanel>
             </Border>
-            <Border  Grid.Column="1"                         
+            <Border Grid.Column="1"                         
                     BorderThickness="1" 
                     BorderBrush="LightGray"
                     VerticalAlignment="Stretch" 
-                    HorizontalAlignment="Stretch">
-
+                    HorizontalAlignment="Stretch"
+                    Margin="5" DataContext="{Binding PassengersInfoDeparture}">
+                <StackPanel>
+                    <TextBlock Text="Вылет" Style="{StaticResource CountPassengersHeaderStyle}" />
+                </StackPanel>
             </Border>
         </Grid>
     </Grid>

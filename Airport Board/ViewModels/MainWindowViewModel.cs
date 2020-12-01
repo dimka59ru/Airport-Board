@@ -1,6 +1,7 @@
 ﻿using Airport_Board.Infrastructure.Commands;
 using Airport_Board.Models;
 using Airport_Board.ViewModels.Base;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,8 +28,7 @@ namespace Airport_Board.ViewModels
 
         private bool _airportStarted;
 
-        private Airport _airport;
-        private FlightInfoViewModel _flightInfo = new FlightInfoViewModel();
+        private Airport _airport;       
 
         public bool AirportStarted
         {
@@ -70,15 +70,15 @@ namespace Airport_Board.ViewModels
             set => Set(ref _timePassed, value);
         }
 
-        public FlightInfoViewModel FlightInfo 
-        { 
-            get => _flightInfo; 
-            set => Set(ref _flightInfo, value);
-        }
+        public FlightInfoViewModel FlightInfo { get; } = new FlightInfoViewModel();
+
+        public CountPassengersInfoViewModel PassengersInfoArrival { get; } = new CountPassengersInfoViewModel();
+        public CountPassengersInfoViewModel PassengersInfoDeparture { get; } = new CountPassengersInfoViewModel();
+
 
         #region Команды
 
-        #region Команда запуска аэропорта
+        #region  StartStopWorkCommand Команда запуска аэропорта
         public ICommand StartStopWorkCommand { get; }
 
         private void OnStartStopWorkCommandExecuted(object p)
@@ -97,27 +97,42 @@ namespace Airport_Board.ViewModels
 
         #endregion
 
+        #region GetFileScheduleCommand Команда загрузки файла расписания
+
+        #endregion
+        public ICommand GetFileScheduleCommand { get; }
+
+        private void OnGetFileScheduleCommandExecuted(object p)
+        {
+            string filePath;
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Text files (*.json)|*.json|All files (*.*)|*.*";
+            openFileDialog.FilterIndex = 0;
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                filePath = openFileDialog.FileName;
+                if (filePath.Length != 0)
+                {
+                    // todo: try catch
+                    var jsonString = File.ReadAllText(filePath);
+                    var schedule = JsonSerializer.Deserialize<List<ScheduleRow>>(jsonString);
+
+                    _airport = new Airport
+                    {
+                        Schedule = schedule
+                    };
+                }
+            }
+        }
+        private bool CanGetFileScheduleCommandExecute(object p) => true;
+
         #endregion
 
         public MainWindowViewModel()
         {
             StartStopWorkCommand = new RelayCommand(OnStartStopWorkCommandExecuted, CanStartStopWorkCommandExecute);
-
-
-            //var options = new JsonSerializerOptions
-            //{
-            //    WriteIndented = true,
-            //    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            //};
-
-            // Читаем
-            var jsonString = File.ReadAllText(@"C:\Users\Дмитрий\OneDrive\Рабочий стол\1.json");
-            var schedule = JsonSerializer.Deserialize<List<ScheduleRow>>(jsonString);
-
-            _airport = new Airport
-            {
-                Schedule = schedule
-            };            
+            GetFileScheduleCommand = new RelayCommand(OnGetFileScheduleCommandExecuted, CanGetFileScheduleCommandExecute);                  
         }
 
 
@@ -138,6 +153,14 @@ namespace Airport_Board.ViewModels
 
         private void Timer_Tick(object sender, EventArgs e)
         {
+            if (_airport == null)
+            {
+                // Расписание не загружено
+                //
+                StopWorkAirport();
+                return;
+            }
+
             // Прибавляем время
             _timeSpan = _timeSpan.Add(TimeSpan.FromSeconds(1));
             TimePassed = string.Format("{0:D1}d:{1:D2}h:{2:D2}m:{3:D2}s",
@@ -145,6 +168,8 @@ namespace Airport_Board.ViewModels
                                             _timeSpan.Hours,
                                             _timeSpan.Minutes,
                                             _timeSpan.Seconds);
+
+            
 
             // Сравнивая время, находим самолет
             var fligthInfo = _airport.Schedule.FirstOrDefault(x =>
@@ -161,12 +186,14 @@ namespace Airport_Board.ViewModels
                 if (fligthInfo.Action == Actions.Arrival)
                 {
                     _airport.CountPassengersArrival.LastFlight = FlightInfo.CountPassengers;
+                    
                 }
                 else
                 {
                     _airport.CountPassengersDeparture.LastFlight = FlightInfo.CountPassengers;
                 }
-                
+
+                PassengersInfoArrival.LastDay = _airport.CountPassengersArrival.LastFlight;
 
                 Debug.WriteLine($"{fligthInfo.Action} - {fligthInfo.AircraftSize} - {fligthInfo.City} - {fligthInfo.Time}");
             }
