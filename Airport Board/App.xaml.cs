@@ -39,6 +39,10 @@ namespace Airport_Board
                     .AsSelf()
                     .SingleInstance();
 
+            // Используется две таких модели
+            builder.RegisterType<CountPassengersInfoViewModel>()
+                    .AsSelf();                    
+
             return builder.Build();
         }
     }

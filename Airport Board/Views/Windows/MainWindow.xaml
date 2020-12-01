@@ -13,12 +13,7 @@
         Height="450" Width="800">  
     
     <Window.Resources>        
-        <Style x:Key="CountPassengersHeaderStyle" TargetType="{x:Type TextBlock}">
-            <Setter Property="FontSize" Value="18"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="TextAlignment" Value="Center"/>
-            <Setter Property="Background" Value="DodgerBlue"/>
-        </Style>
+        
     </Window.Resources>    
     <Grid>
         <Grid.RowDefinitions>
@@ -86,27 +81,14 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0"                         
-                    BorderThickness="1" 
-                    BorderBrush="LightGray"
-                    VerticalAlignment="Stretch" 
-                    HorizontalAlignment="Stretch"
-                    Margin="5" DataContext="{Binding PassengersInfoArrival}">
-                <StackPanel>
-                    <TextBlock Text="Прилёт" Style="{StaticResource CountPassengersHeaderStyle}"/>
-                    <TextBlock Text="{Binding LastDay}" Style="{StaticResource CountPassengersHeaderStyle}"/>
-                </StackPanel>
-            </Border>
-            <Border Grid.Column="1"                         
-                    BorderThickness="1" 
-                    BorderBrush="LightGray"
-                    VerticalAlignment="Stretch" 
-                    HorizontalAlignment="Stretch"
-                    Margin="5" DataContext="{Binding PassengersInfoDeparture}">
-                <StackPanel>
-                    <TextBlock Text="Вылет" Style="{StaticResource CountPassengersHeaderStyle}" />
-                </StackPanel>
-            </Border>
+            <view:PassengersInfoView Grid.Column="0"
+                                     Header="Прилёт"
+                  DataContext="{Binding PassengersInfoArrival}"/>
+            
+            <view:PassengersInfoView Grid.Column="1"
+                                     Header="Вылет"
+                  DataContext="{Binding PassengersInfoDeparture}"/> 
+            
         </Grid>
     </Grid>
 </Window>

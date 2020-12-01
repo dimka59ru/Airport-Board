@@ -74,8 +74,8 @@ namespace Airport_Board.ViewModels
         #endregion
 
         public FlightInfoViewModel FlightInfo { get; }
-        public CountPassengersInfoViewModel PassengersInfoArrival { get; } = new CountPassengersInfoViewModel();
-        public CountPassengersInfoViewModel PassengersInfoDeparture { get; } = new CountPassengersInfoViewModel();
+        public CountPassengersInfoViewModel PassengersInfoArrival { get; }
+        public CountPassengersInfoViewModel PassengersInfoDeparture { get; }
 
         #region Команды
 
@@ -131,11 +131,16 @@ namespace Airport_Board.ViewModels
 
         #endregion
 
-        public MainWindowViewModel(IGetScheduleFromFileService getScheduleFromFileService, FlightInfoViewModel flightInfo)
+        public MainWindowViewModel(IGetScheduleFromFileService getScheduleFromFileService,
+                                   FlightInfoViewModel flightInfo,
+                                   CountPassengersInfoViewModel passengersInfoArrival,
+                                   CountPassengersInfoViewModel passengersInfoDeparture)
         {
             _getScheduleFromFileService = getScheduleFromFileService;
 
             FlightInfo = flightInfo;
+            PassengersInfoArrival = passengersInfoArrival;
+            PassengersInfoDeparture = passengersInfoDeparture;
 
             StartStopWorkCommand = new RelayCommand(OnStartStopWorkCommandExecuted, CanStartStopWorkCommandExecute);
             GetFileScheduleCommand = new RelayCommand(OnGetFileScheduleCommandExecuted, CanGetFileScheduleCommandExecute);                  
@@ -199,6 +204,8 @@ namespace Airport_Board.ViewModels
                 }
 
                 PassengersInfoArrival.LastDay = _airport.CountPassengersArrival.LastFlight;
+                PassengersInfoDeparture.LastDay = _airport.CountPassengersDeparture.LastFlight;
+
 
                 Debug.WriteLine($"{fligthInfo.Action} - {fligthInfo.AircraftSize} - {fligthInfo.City} - {fligthInfo.Time}");
             }
