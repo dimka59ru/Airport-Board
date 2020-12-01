@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Airport_Board.ViewModels"
+        xmlns:view="clr-namespace:Airport_Board.Views"
         xmlns:local="clr-namespace:Airport_Board"
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         mc:Ignorable="d"
@@ -11,25 +12,7 @@
         DataContext="{Binding MainWindowViewModel, Source={StaticResource Locator}}"
         Height="450" Width="800">  
     
-    <Window.Resources>
-        <Style x:Key="HeaderStyle" TargetType="{x:Type Border}">
-            <Setter Property="BorderBrush" Value="LightGray"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="5"/>
-            <Setter Property="Background" Value="Beige"/>
-            <Setter Property="Margin" Value="0 0 -1 -1"/>
-        </Style>
-
-        <Style x:Key="FlightInfoStyle" TargetType="{x:Type Border}">
-            <Setter Property="BorderBrush" Value="LightGray"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Margin" Value="0 0 -1 -1"/>
-            <Setter Property="Padding" Value="5"/>            
-        </Style>
-        <Style x:Key="TextStyle" TargetType="{x:Type TextBlock}">
-            <Setter Property="FontSize" Value="18"/>            
-        </Style>
-        
+    <Window.Resources>        
         <Style x:Key="CountPassengersHeaderStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -94,74 +77,9 @@
                         Value="{Binding Factor}"/>
             </DockPanel>
         </Grid>
+
+        <view:FligthInfoView Grid.Row="2" DataContext="{Binding FlightInfo}"/>    
         
-        <Grid Grid.Row="2" DataContext="{Binding FlightInfo}" Margin="5 5 6 5"
-              Background="BurlyWood"
-              x:Name="FlightInfoRow">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource HeaderStyle}">
-                <TextBlock Text="Статус"/>
-            </Border>
-            <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource HeaderStyle}">
-                <TextBlock Text="Город" />
-            </Border>
-            <Border Grid.Row="0" Grid.Column="2" Style="{StaticResource HeaderStyle}">
-                <TextBlock Text="Самолет" />
-            </Border>
-            <Border Grid.Row="0" Grid.Column="3" Style="{StaticResource HeaderStyle}">
-                <TextBlock Text="Количество пассажиров" />
-            </Border>
-            <Border Grid.Row="0" Grid.Column="4" Style="{StaticResource HeaderStyle}">
-                <TextBlock Text="Время" />
-            </Border> 
-            
-            
-            <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource FlightInfoStyle}">
-                <fa5:ImageAwesome Icon="{Binding FontAwesomeIcon}" Height="25" Foreground="Black" />
-            </Border>
-            
-            <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource FlightInfoStyle}">
-                <TextBlock Text="{Binding City}" Style="{StaticResource TextStyle}"/>
-            </Border>
-            <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource FlightInfoStyle}">
-                <TextBlock Text="{Binding AircraftSize}" Style="{StaticResource TextStyle}"/>
-            </Border>
-            <Border Grid.Row="1" Grid.Column="3" Style="{StaticResource FlightInfoStyle}">
-                <TextBlock Text="{Binding CountPassengers, NotifyOnTargetUpdated=True}" Style="{StaticResource TextStyle}">
-                    <TextBlock.Triggers>
-                        <EventTrigger RoutedEvent="Binding.TargetUpdated">
-                            <BeginStoryboard>
-                                <Storyboard>                                   
-                                    <ColorAnimation 
-                                        Storyboard.TargetName="FlightInfoRow"
-                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                        To="Red" Duration="0:0:1"
-                                        AutoReverse="True" 
-                                        RepeatBehavior="1x"/>
-                                </Storyboard>
-                                </BeginStoryboard>
-                        </EventTrigger>
-                    </TextBlock.Triggers>
-                </TextBlock>
-            </Border>
-            <Border Grid.Row="1" Grid.Column="4" Style="{StaticResource FlightInfoStyle}">
-                <TextBlock Text="{Binding Time}" Style="{StaticResource TextStyle}"/>
-            </Border>
-            
-            
-        </Grid>
-
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

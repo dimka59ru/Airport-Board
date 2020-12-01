@@ -33,7 +33,11 @@ namespace Airport_Board
 
             builder.RegisterType<MainWindowViewModel>()
                     .AsSelf()
-                    .SingleInstance();            
+                    .SingleInstance();
+
+            builder.RegisterType<FlightInfoViewModel>()
+                    .AsSelf()
+                    .SingleInstance();
 
             return builder.Build();
         }

@@ -73,7 +73,7 @@ namespace Airport_Board.ViewModels
 
         #endregion
 
-        public FlightInfoViewModel FlightInfo { get; } = new FlightInfoViewModel();
+        public FlightInfoViewModel FlightInfo { get; }
         public CountPassengersInfoViewModel PassengersInfoArrival { get; } = new CountPassengersInfoViewModel();
         public CountPassengersInfoViewModel PassengersInfoDeparture { get; } = new CountPassengersInfoViewModel();
 
@@ -131,10 +131,12 @@ namespace Airport_Board.ViewModels
 
         #endregion
 
-        public MainWindowViewModel(IGetScheduleFromFileService getScheduleFromFileService)
+        public MainWindowViewModel(IGetScheduleFromFileService getScheduleFromFileService, FlightInfoViewModel flightInfo)
         {
             _getScheduleFromFileService = getScheduleFromFileService;
-            
+
+            FlightInfo = flightInfo;
+
             StartStopWorkCommand = new RelayCommand(OnStartStopWorkCommandExecuted, CanStartStopWorkCommandExecute);
             GetFileScheduleCommand = new RelayCommand(OnGetFileScheduleCommandExecuted, CanGetFileScheduleCommandExecute);                  
         }
