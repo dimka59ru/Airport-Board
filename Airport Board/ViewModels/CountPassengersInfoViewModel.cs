@@ -14,7 +14,11 @@ namespace Airport_Board.ViewModels
         public int LastFlight
         {
             get => _lastFligth;
-            set => Set(ref _lastFligth, value);
+            set
+            {
+                Set(ref _lastFligth, value);
+                All += _lastFligth;
+            }
         }
 
         public int LastDay

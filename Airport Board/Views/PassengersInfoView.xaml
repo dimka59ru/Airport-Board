@@ -13,6 +13,14 @@
             <Setter Property="TextAlignment" Value="Center"/>
             <Setter Property="Background" Value="DodgerBlue"/>
         </Style>
+
+        <Style x:Key="CountPassengersRowStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="Background" Value="LightSalmon"/>
+        </Style>
+        
     </UserControl.Resources>
     <Border Grid.Column="0"                         
                     BorderThickness="1" 
@@ -23,7 +31,9 @@
         
         <StackPanel>
             <TextBlock Text="{Binding Header, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" Style="{StaticResource CountPassengersHeaderStyle}"/>
-            <TextBlock Text="{Binding LastDay}" Style="{StaticResource CountPassengersHeaderStyle}"/>
+            <TextBlock Text="{Binding LastFlight}" Style="{StaticResource CountPassengersRowStyle}"/>
+            <TextBlock Text="{Binding LastDay}" Style="{StaticResource CountPassengersRowStyle}"/>
+            <TextBlock Text="{Binding All}" Style="{StaticResource CountPassengersRowStyle}"/>
         </StackPanel>
     </Border>
 </UserControl>

@@ -21,8 +21,8 @@ namespace Airport_Board.ViewModels
         private string _timePassed = "0d:00h:00m:00s";
 
         private TimeSpan _timeSpan = TimeSpan.Zero;
-        private readonly DispatcherTimer _timer = new DispatcherTimer();
-        private double _defaultTimerInterval = 1000;
+        private readonly DispatcherTimer _timer = new DispatcherTimer(DispatcherPriority.Render);
+        private double _defaultTimerInterval = 60000;
 
         private bool _airportStarted;
         private readonly IGetScheduleFromFileService _getScheduleFromFileService;
@@ -147,6 +147,7 @@ namespace Airport_Board.ViewModels
         private void StartWorkAirport()
         {
             _timer.Interval = TimeSpan.FromMilliseconds(_defaultTimerInterval / Factor);
+            _timer.Tick -= Timer_Tick;
             _timer.Tick += Timer_Tick;
             _timer.Start();
 
@@ -155,7 +156,8 @@ namespace Airport_Board.ViewModels
 
         private void StopWorkAirport()
         {
-            _timer.Stop();
+            _timer.Tick -= Timer_Tick;
+            _timer.Stop();            
             AirportStarted = false;
         }
 
@@ -169,12 +171,11 @@ namespace Airport_Board.ViewModels
             }
 
             // Прибавляем время
-            _timeSpan = _timeSpan.Add(TimeSpan.FromSeconds(1));
-            TimePassed = string.Format("{0:D1}d:{1:D2}h:{2:D2}m:{3:D2}s",
+            _timeSpan = _timeSpan.Add(TimeSpan.FromMilliseconds(_defaultTimerInterval));
+            TimePassed = string.Format("{0:D1}d:{1:D2}h:{2:D2}m", //{0:D1}d:{1:D2}h:{2:D2}m:{3:D2}s
                                             _timeSpan.Days,
                                             _timeSpan.Hours,
-                                            _timeSpan.Minutes,
-                                            _timeSpan.Seconds);
+                                            _timeSpan.Minutes);
             
 
             // Сравнивая время, находим самолет
@@ -191,12 +192,12 @@ namespace Airport_Board.ViewModels
 
                 if (fligthInfo.Action == Actions.Arrival)
                 {
-                    PassengersInfoArrival.LastDay = FlightInfo.CountPassengers;
+                    PassengersInfoArrival.LastFlight = FlightInfo.CountPassengers;
                     
                 }
                 else
                 {
-                    PassengersInfoDeparture.LastDay = FlightInfo.CountPassengers;
+                    PassengersInfoDeparture.LastFlight = FlightInfo.CountPassengers;
                 }  
 
                 Debug.WriteLine($"{fligthInfo.Action} - {fligthInfo.AircraftSize} - {fligthInfo.City} - {fligthInfo.Time}");
