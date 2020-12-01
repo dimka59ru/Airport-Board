@@ -4,6 +4,7 @@ using Airport_Board.Services;
 using Airport_Board.ViewModels.Base;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
@@ -24,9 +25,6 @@ namespace Airport_Board.ViewModels
         private double _defaultTimerInterval = 1000;
 
         private bool _airportStarted;
-
-        private Airport _airport;
-
         private readonly IGetScheduleFromFileService _getScheduleFromFileService;
 
 
@@ -70,6 +68,8 @@ namespace Airport_Board.ViewModels
             get => _timePassed;
             set => Set(ref _timePassed, value);
         }
+
+        public IList<ScheduleRow> Schedule { get; set; }
 
         #endregion
 
@@ -120,10 +120,7 @@ namespace Airport_Board.ViewModels
                     var _getScheduleFromFileService = new GetScheduleFromJsonFileService();
                     var schedule = _getScheduleFromFileService.GetScheduleFromFile(filePath).ToList();
 
-                    _airport = new Airport
-                    {
-                        Schedule = schedule
-                    };
+                    Schedule = schedule;                   
                 }
             }
         }
@@ -164,10 +161,9 @@ namespace Airport_Board.ViewModels
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (_airport == null)
+            if (Schedule == null)
             {
-                // Расписание не загружено
-                //
+                // Сообщить пользователю, что Расписание не загружено                
                 StopWorkAirport();
                 return;
             }
@@ -182,7 +178,7 @@ namespace Airport_Board.ViewModels
             
 
             // Сравнивая время, находим самолет
-            var fligthInfo = _airport.Schedule.FirstOrDefault(x =>
+            var fligthInfo = Schedule.FirstOrDefault(x =>
             {
                 var aircraftTime = x.Time.TimeOfDay;
                 var nowTime = _timeSpan.Subtract(TimeSpan.FromDays(_timeSpan.Days)); // Уберем дни из прошедшего времени
@@ -195,17 +191,13 @@ namespace Airport_Board.ViewModels
 
                 if (fligthInfo.Action == Actions.Arrival)
                 {
-                    _airport.CountPassengersArrival.LastFlight = FlightInfo.CountPassengers;
+                    PassengersInfoArrival.LastDay = FlightInfo.CountPassengers;
                     
                 }
                 else
                 {
-                    _airport.CountPassengersDeparture.LastFlight = FlightInfo.CountPassengers;
-                }
-
-                PassengersInfoArrival.LastDay = _airport.CountPassengersArrival.LastFlight;
-                PassengersInfoDeparture.LastDay = _airport.CountPassengersDeparture.LastFlight;
-
+                    PassengersInfoDeparture.LastDay = FlightInfo.CountPassengers;
+                }  
 
                 Debug.WriteLine($"{fligthInfo.Action} - {fligthInfo.AircraftSize} - {fligthInfo.City} - {fligthInfo.Time}");
             }
