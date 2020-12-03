@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,20 +7,35 @@ namespace Airport_Board.Models
 {
     internal class CountPassengers
     {
-        private int lastFlight;
+        private double departure;
+        private double arrival;
 
-        public int LastFlight
+        private const int scale = 1;
+
+        public double Scale { get; set; } = 1;
+
+        public double Departure
         {
-            get => lastFlight;
+            get => departure; 
             set
             {
-                lastFlight = value;
-                All += lastFlight;
+                departure = value;
+                RelativeSizeDeparture = departure * Scale;
+            }
+        }
+        public double Arrival
+        {
+            get => arrival; 
+            set
+            {
+                arrival = value;
+                RelativeSizeArrival = arrival * Scale;
             }
         }
 
-        public int LastDay { get; set; }
+        public double RelativeSizeArrival { get; set; }
+        public double RelativeSizeDeparture { get; set; }
 
-        public int All { get; private set; }
+
     }
 }

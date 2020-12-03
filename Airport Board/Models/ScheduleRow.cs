@@ -8,7 +8,7 @@ namespace Airport_Board.Models
     {
         public AircraftSizes AircraftSize { get; set; }
 
-        public Actions @Action { get; set; }
+        public FlightActions @Action { get; set; }
 
         public DateTime Time { get; set; }
 

@@ -70,7 +70,7 @@ namespace Airport_Board.ViewModels
                                 _fligthInfo.Time.Hour,
                                 _fligthInfo.Time.Minute);
 
-            if (_fligthInfo.Action == Actions.Arrival)
+            if (_fligthInfo.Action == FlightActions.Arrival)
             {
                 FontAwesomeIcon = "Solid_PlaneArrival";
             }

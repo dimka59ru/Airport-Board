@@ -5,6 +5,7 @@ using Airport_Board.ViewModels.Base;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
@@ -140,7 +141,30 @@ namespace Airport_Board.ViewModels
             PassengersInfoDeparture = passengersInfoDeparture;
 
             StartStopWorkCommand = new RelayCommand(OnStartStopWorkCommandExecuted, CanStartStopWorkCommandExecute);
-            GetFileScheduleCommand = new RelayCommand(OnGetFileScheduleCommandExecuted, CanGetFileScheduleCommandExecute);                  
+            GetFileScheduleCommand = new RelayCommand(OnGetFileScheduleCommandExecuted, CanGetFileScheduleCommandExecute);
+
+
+            Random rnd = new Random();
+
+            dataPoints = new CountPassengers[24];
+            for (int i = 0; i < dataPoints.Length; i++)
+            {
+                dataPoints[i] = new CountPassengers { Arrival = 10, Departure = 10 };
+            }            
+
+            TestDataPoints = new ObservableCollection<CountPassengers>(dataPoints);
+        }
+
+        CountPassengers[] dataPoints;
+
+        //CountPassengers[] dataPoints;
+        //public ObservableCollection<CountPassengers> TestDataPoints { get; set; }
+        private ObservableCollection<CountPassengers> _testDataPoints;
+
+        public ObservableCollection<CountPassengers> TestDataPoints
+        {
+            get => _testDataPoints;
+            set => Set(ref _testDataPoints, value);
         }
 
 
@@ -189,7 +213,7 @@ namespace Airport_Board.ViewModels
             });
 
             // Если количество дней стало больше с последней проверки, то обнуляем счетчики за последний день
-            // Произойдет не ровно в 00:00:01. Зависит от _defaultTimerInterval
+            // Произойдет не ровно в 00:00:01. Зависит от _defaultTimerInterval / Factor
             if (_timeSpan.Days > _dayPassed)
             {
                 PassengersInfoArrival.LastDay = 0;
@@ -202,16 +226,50 @@ namespace Airport_Board.ViewModels
                 FlightInfo.UpdateInfo(fligthInfo); // Обновляем инфо о рейсе
 
                 // Обновляем инфо о пассажирах
-                if (fligthInfo.Action == Actions.Arrival)
+                if (fligthInfo.Action == FlightActions.Arrival)
                 {
                     PassengersInfoArrival.LastFlight = FlightInfo.CountPassengers;
                     PassengersInfoArrival.LastDay += FlightInfo.CountPassengers;
+                    
+
+                    if (dataPoints.Length > _timeSpan.Hours)
+                    {
+                        dataPoints[_timeSpan.Hours].Arrival += FlightInfo.CountPassengers;
+                    }
+
+                    
                 }
                 else
                 {
                     PassengersInfoDeparture.LastFlight = FlightInfo.CountPassengers;
                     PassengersInfoDeparture.LastDay += FlightInfo.CountPassengers;
-                }  
+
+                    if (dataPoints.Length > _timeSpan.Hours)
+                    {
+                        dataPoints[_timeSpan.Hours].Departure += FlightInfo.CountPassengers;
+                    }
+                    
+                }
+
+
+                var mxA = dataPoints.Max(x => x.Arrival);
+                var mxD = dataPoints.Max(x => x.Departure);
+                var mx = Math.Max(mxA, mxD);
+
+                TestDataPoints.Clear();
+
+                var newdp = dataPoints.Select(x => new CountPassengers
+                {
+                    Scale = 150 / mx,
+                    Arrival = x.Arrival,
+                    Departure = x.Departure
+                });
+
+                foreach (var item in newdp)
+                {
+                    TestDataPoints.Add(item);
+                }
+
 
                 Debug.WriteLine($"{fligthInfo.Action} - {fligthInfo.AircraftSize} - {fligthInfo.City} - {fligthInfo.Time}");
             }
