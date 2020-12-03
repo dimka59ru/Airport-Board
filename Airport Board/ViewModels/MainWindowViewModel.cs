@@ -18,7 +18,7 @@ namespace Airport_Board.ViewModels
         private int _maxFactor = 10000;
         private double _factor = 1.0;
 
-        private string _timePassed = "0d:00h:00m:00s";
+        private string _timePassed = "0d:00h:00m";
 
         private TimeSpan _timeSpan = TimeSpan.Zero;
         private readonly DispatcherTimer _timer = new DispatcherTimer(DispatcherPriority.Render);
@@ -161,6 +161,7 @@ namespace Airport_Board.ViewModels
             AirportStarted = false;
         }
 
+        private int _dayPassed; 
         private void Timer_Tick(object sender, EventArgs e)
         {
             if (Schedule == null)
@@ -176,9 +177,10 @@ namespace Airport_Board.ViewModels
                                             _timeSpan.Days,
                                             _timeSpan.Hours,
                                             _timeSpan.Minutes);
+
             
 
-            // Сравнивая время, находим самолет
+            // Сравнивая время, находим рейс
             var fligthInfo = Schedule.FirstOrDefault(x =>
             {
                 var aircraftTime = x.Time.TimeOfDay;
@@ -186,18 +188,29 @@ namespace Airport_Board.ViewModels
                 return aircraftTime == nowTime;
             });
 
+            // Если количество дней стало больше с последней проверки, то обнуляем счетчики за последний день
+            // Произойдет не ровно в 00:00:01. Зависит от _defaultTimerInterval
+            if (_timeSpan.Days > _dayPassed)
+            {
+                PassengersInfoArrival.LastDay = 0;
+                PassengersInfoDeparture.LastDay = 0;
+                _dayPassed = _timeSpan.Days;
+            }
+
             if (fligthInfo != null)
             {
                 FlightInfo.UpdateInfo(fligthInfo); // Обновляем инфо о рейсе
 
+                // Обновляем инфо о пассажирах
                 if (fligthInfo.Action == Actions.Arrival)
                 {
                     PassengersInfoArrival.LastFlight = FlightInfo.CountPassengers;
-                    
+                    PassengersInfoArrival.LastDay += FlightInfo.CountPassengers;
                 }
                 else
                 {
                     PassengersInfoDeparture.LastFlight = FlightInfo.CountPassengers;
+                    PassengersInfoDeparture.LastDay += FlightInfo.CountPassengers;
                 }  
 
                 Debug.WriteLine($"{fligthInfo.Action} - {fligthInfo.AircraftSize} - {fligthInfo.City} - {fligthInfo.Time}");
