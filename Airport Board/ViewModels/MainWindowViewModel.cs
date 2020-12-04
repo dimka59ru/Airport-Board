@@ -154,30 +154,13 @@ namespace Airport_Board.ViewModels
             StartStopWorkCommand = new RelayCommand(OnStartStopWorkCommandExecuted, CanStartStopWorkCommandExecute);
             GetFileScheduleCommand = new RelayCommand(OnGetFileScheduleCommandExecuted, CanGetFileScheduleCommandExecute);
 
-
-            Random rnd = new Random();
-
-            dataPoints = new CountPassengers[24];
-            for (int i = 0; i < dataPoints.Length; i++)
+            for (int i = 0; i < 24; i++)
             {
-                dataPoints[i] = new CountPassengers { Arrival = 10, Departure = 10 };
-            }            
-
-            TestDataPoints = new ObservableCollection<CountPassengers>(dataPoints);
+                TestDataPoints.Add(new HistogramItemViewModel { Header = i.ToString() });
+            }
         }
 
-        CountPassengers[] dataPoints;
-
-        //CountPassengers[] dataPoints;
-        //public ObservableCollection<CountPassengers> TestDataPoints { get; set; }
-        private ObservableCollection<CountPassengers> _testDataPoints;
-
-        public ObservableCollection<CountPassengers> TestDataPoints
-        {
-            get => _testDataPoints;
-            set => Set(ref _testDataPoints, value);
-        }
-
+        public ObservableCollection<HistogramItemViewModel> TestDataPoints { get; } = new ObservableCollection<HistogramItemViewModel>();
 
         private void StartWorkAirport()
         {
@@ -223,59 +206,53 @@ namespace Airport_Board.ViewModels
                 PassengersInfoArrival.LastDay = 0;
                 PassengersInfoDeparture.LastDay = 0;
                 _dayPassed = _timeSpan.Days;
+
+                // Очищаем гистограмму
+                foreach (var x in TestDataPoints)
+                {
+                    x.Scale = 1;
+                    x.Value1 = 0;
+                    x.Value2 = 0;
+                }
             }
 
             if (fligthInfo != null)
             {
                 FlightInfo.UpdateInfo(fligthInfo); // Обновляем инфо о рейсе
 
+                var value1 = TestDataPoints[_timeSpan.Hours].Value1;
+                var value2 = TestDataPoints[_timeSpan.Hours].Value2;
+
                 // Обновляем инфо о пассажирах
                 if (fligthInfo.Action == FlightActions.Arrival)
                 {
                     PassengersInfoArrival.LastFlight = FlightInfo.CountPassengers;
                     PassengersInfoArrival.LastDay += FlightInfo.CountPassengers;
-                    
-
-                    if (dataPoints.Length > _timeSpan.Hours)
-                    {
-                        dataPoints[_timeSpan.Hours].Arrival += FlightInfo.CountPassengers;
-                    }
-
-                    
+                    value1 += FlightInfo.CountPassengers;  
                 }
                 else
                 {
                     PassengersInfoDeparture.LastFlight = FlightInfo.CountPassengers;
                     PassengersInfoDeparture.LastDay += FlightInfo.CountPassengers;
 
-                    if (dataPoints.Length > _timeSpan.Hours)
-                    {
-                        dataPoints[_timeSpan.Hours].Departure += FlightInfo.CountPassengers;
-                    }
-                    
+                    value2 += FlightInfo.CountPassengers; 
                 }
 
+                var max = Math.Max(value1, value2);
+                var maxItem1 = TestDataPoints.Max(x => x.Value1);
+                var maxItem2 = TestDataPoints.Max(x => x.Value2);
 
-                var mxA = dataPoints.Max(x => x.Arrival);
-                var mxD = dataPoints.Max(x => x.Departure);
-                var mx = Math.Max(mxA, mxD);
+                max = Math.Max(max, Math.Max(maxItem1, maxItem2));
 
-                TestDataPoints.Clear();
-
-                var newdp = dataPoints.Select(x => new CountPassengers
+                foreach (var x in TestDataPoints)
                 {
-                    Scale = 150 / mx,
-                    Arrival = x.Arrival,
-                    Departure = x.Departure
-                });
-
-                foreach (var item in newdp)
-                {
-                    TestDataPoints.Add(item);
+                    x.Scale = 150.0 / max;
                 }
+                TestDataPoints[_timeSpan.Hours].Value1 = value1;
+                TestDataPoints[_timeSpan.Hours].Value2 = value2;       
 
 
-                Debug.WriteLine($"{fligthInfo.Action} - {fligthInfo.AircraftSize} - {fligthInfo.City} - {fligthInfo.Time}");
+                //Debug.WriteLine($"{fligthInfo.Action} - {fligthInfo.AircraftSize} - {fligthInfo.City} - {fligthInfo.Time}");
             }
         }
 
