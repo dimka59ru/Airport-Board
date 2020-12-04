@@ -79,7 +79,8 @@
                                         Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
                                         From ="{Binding Color, Source={StaticResource BackgroundColor}}" To="Red" Duration="0:0:1"
                                         AutoReverse="True" 
-                                        RepeatBehavior="1x"/>
+                                        RepeatBehavior="1x"
+                                        FillBehavior="Stop"/>
                             </Storyboard>
                         </BeginStoryboard>
                     </EventTrigger>
