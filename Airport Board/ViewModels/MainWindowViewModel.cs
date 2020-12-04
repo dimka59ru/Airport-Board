@@ -1,6 +1,7 @@
 ﻿using Airport_Board.Infrastructure.Commands;
 using Airport_Board.Models;
 using Airport_Board.Services;
+using Airport_Board.Services.Interfaces;
 using Airport_Board.ViewModels.Base;
 using Microsoft.Win32;
 using System;
@@ -27,6 +28,7 @@ namespace Airport_Board.ViewModels
 
         private bool _airportStarted;
         private readonly IGetScheduleFromFileService _getScheduleFromFileService;
+        private readonly IUserDialogService _userDialog;
 
 
         #region Properties
@@ -91,7 +93,14 @@ namespace Airport_Board.ViewModels
             }
             else
             {
-                StartWorkAirport();
+                if (Schedule != null)
+                {
+                    StartWorkAirport();
+                }
+                else
+                {
+                    _userDialog.ShowInformation($"Расписание не загружено. Загрузите расписание.", "Внимание");
+                }
             }
         }
 
@@ -130,11 +139,13 @@ namespace Airport_Board.ViewModels
         #endregion
 
         public MainWindowViewModel(IGetScheduleFromFileService getScheduleFromFileService,
+                                   IUserDialogService userDialog,
                                    FlightInfoViewModel flightInfo,
                                    CountPassengersInfoViewModel passengersInfoArrival,
                                    CountPassengersInfoViewModel passengersInfoDeparture)
         {
             _getScheduleFromFileService = getScheduleFromFileService;
+            _userDialog = userDialog;
 
             FlightInfo = flightInfo;
             PassengersInfoArrival = passengersInfoArrival;
@@ -188,13 +199,6 @@ namespace Airport_Board.ViewModels
         private int _dayPassed; 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (Schedule == null)
-            {
-                // Сообщить пользователю, что Расписание не загружено                
-                StopWorkAirport();
-                return;
-            }
-
             // Прибавляем время
             _timeSpan = _timeSpan.Add(TimeSpan.FromMilliseconds(_defaultTimerInterval));
             TimePassed = string.Format("{0:D1}d:{1:D2}h:{2:D2}m", //{0:D1}d:{1:D2}h:{2:D2}m:{3:D2}s

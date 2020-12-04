@@ -1,4 +1,5 @@
 ﻿using Airport_Board.Services;
+using Airport_Board.Services.Interfaces;
 using Airport_Board.ViewModels;
 using Autofac;
 using System;
@@ -30,6 +31,9 @@ namespace Airport_Board
             builder.RegisterType<GetScheduleFromJsonFileService>()
                     .As<IGetScheduleFromFileService>()
                     .SingleInstance();
+
+            builder.RegisterType<WindowsUserDialogService>()
+                    .As<IUserDialogService>();
 
             builder.RegisterType<MainWindowViewModel>()
                     .AsSelf()

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Airport_Board.Services
+namespace Airport_Board.Services.Interfaces
 {
     internal interface IGetScheduleFromFileService
     {
